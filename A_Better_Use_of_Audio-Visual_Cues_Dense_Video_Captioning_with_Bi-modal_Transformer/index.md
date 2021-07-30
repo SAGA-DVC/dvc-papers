@@ -3,6 +3,8 @@
 Dense Video Captioning: 
 > First localize the events, and then produce one-sentence descriptions of each of them. 
 
+[The paper.](https://arxiv.org/abs/2005.08271)
+
 ## Novelty
 - ***Bi-modal transformer*** with ***multi-head proposal generator***.
 - In the transformer architecture, attention is used to fuse the two input sequences.

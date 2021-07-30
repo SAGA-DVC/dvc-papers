@@ -2,6 +2,8 @@
 Dense Video Captioning: 
 > First localize the events, and then produce one-sentence descriptions of each of them. 
 
+[The paper.](https://arxiv.org/abs/1804.00100)
+
 #### Application areas:
 * Video summarization
 * Video retrieval (search)
