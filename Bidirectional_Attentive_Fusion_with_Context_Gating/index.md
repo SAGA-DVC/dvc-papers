@@ -57,7 +57,7 @@ Get captions of selected proposals
 	4. Instead of simple concatenation of attended visual features and context features, a ***context gate*** is used to balance their relative contribution. The context gate explicitly measures contribution of surrounding context info (proposal state). Intent: network should learn how much context should be used when generating next word.
 3. Joint ranking technique is used to select high-confidence proposal-caption pairs by taking proposal score and caption confidence.
 
-![](Pasted%20image%2020210730144049.png)
+![](assets/Pasted%20image%2020210730144049.png)
 
 ## Training
 Apparently, all parts involve LSTMs. Refer the end of 3.3.
