@@ -12,7 +12,7 @@ Dense Video Captioning:
 SOTA performance on BLEU@3-4 and F1 metrics.
 
 ## Architecture
-![[Pasted image 20210728174110.png]]
+![](Pasted%20image%2020210730143821.png)
 1. **Input**: continuous features stacked in a sequence.
 	1. Visual: Inflated 3D network (I3D)
 	2. Audio: VGGish
