@@ -40,7 +40,7 @@ Two heads:
 1. *F x C* FC layers: for action class label. f --> $y^c$ logits vector (multiclass)
 2. *2F x 2* FC layers: for temporal region label. \[f, GVF\] --> $y^r$ logits vector (binary)
 
-![](Pasted%20image%2020210803233321.png)
+![](assets/Pasted%20image%2020210803233321.png)
 
 #### Loss:
 1. Cross-entropy for both classification heads
