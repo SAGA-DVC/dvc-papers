@@ -8,7 +8,7 @@ This paper introduces a new model: Two-Stream Inflated 3D Convnet (I3D) for the 
 
 The paper compares the following models on the following task: Pre-training on Kinetics dataset and then fine-tuning on [HMDB-51](https://paperswithcode.com/dataset/hmdb51) and [UCF-101](https://paperswithcode.com/dataset/ucf101) datasets.
 
-![[assets/Architectures.png]]
+![](assets/Architectures.png)
 
 #### ConvNet + LSTM
 Using successful image classification networks only, features are extracted from each frame of the video and predictions are (independently) pooled across the whole video. This architecture completely ignores the temporal structure of the video, i.e. notions of *before-after*, *forward-backward in time* are not learned. Temporal structure is important for captioning events.
@@ -30,7 +30,7 @@ In this architecture, short temporal snapshots are modeled by averaging predicti
 An extension to this involves fusing spatial and optical flow strams after the last convolutional layer.
 
 #### Two-Stream Inflated 3D ConvNets (I3D)
-![[assets/I3D.png]]
+![](assets/I3D.png)
 ##### Inflating 2D ConvNets into 3D
 The trick this architecture employs is to simply convert 2D ConvNets (successful ones, pre-trained on ImageNet) into 3D ConvNets. This conversion is done by *inflating* filters and pooling kernels, i.e. adding a temporal dimension to them. Hence filters go from 2D to 3D.
 
