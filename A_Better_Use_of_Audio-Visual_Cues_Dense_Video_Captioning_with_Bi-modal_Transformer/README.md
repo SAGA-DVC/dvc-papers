@@ -39,7 +39,7 @@ Produce a caption for each proposal given to it.
 	1. uses previous caption words ($c_1$, $c_2$, $c_3$, ..., $c_{t-1}$), self-attends them, 
 	2. then carries out bi-modal attention of $c_{t-1}$ with $A^v$ and $V^a$.
 	3. Then there's a bridge (?)
-	4. Position-wise (?) fully-connected layers
+	4. Position-wise (to encode order info) fully-connected layers
 4. The final representation of the Decoder is used to model the distribution of the next caption word, over the vocabulary ==> FC layer with softmax.
 
 ### Other stuff
@@ -59,15 +59,14 @@ It consists of two parts:
 	1. Self-attention for audio, video
 	2. $A^v$ and $V^a$ are calculated
 3. The final encoder representation of the two modalities $A^v$ and $V^a$ are then given to the Proposal Generator:
-	1. The two modalities may have different dimensions with respect to the time duration(sequence length) (does this mean they are not necessarily in sync?). Hence they are not fused here, but instead there are two distinct proposal generator heads, one for each modality. Hence, for each modality individually, the predictions are made at every time step, forming a "common pool of cross-modal predictions".
-	2. YOLO-like convolutional layers. (?)
+	1. The two modalities may have different dimensions with respect to the time duration(sequence length) (does this mean they are not necessarily in sync?). Hence they are not fused here, but instead there are two distinct sets of proposal generator heads, one set for each modality. Hence, for each modality individually, the predictions are made at every time step, forming a "common pool of cross-modal predictions".
+	2. YOLO-like convolutional layers. TODO.
 	3. Predictions: Temporal boundaries, and confidence scores are found by the three values predicted by proposal head: center, length, confidence. 
-	4. Some conversion from grid-cells to time.
-	5. Select the top 100 (confidence score) from common pool of proposals.
+	4. Select the top 100 (by confidence score) from common pool of proposals.
 
 
 ## Training
 1. Captioning module is trained with ground truth proposals
 2. Proposal Generator is trained using the now trained bi-modal encoder from captioning modules
 3. Loss: KL-divergence, with "Label Smoothing".
-4. Each proposal head uses MSE for localization and cross-entropy for objectness loss (?).
+4. Each proposal head uses MSE for localization and cross-entropy for objectness (proposal or not) loss. Ref YOLO.
