@@ -60,9 +60,14 @@ It consists of two parts:
 	2. $A^v$ and $V^a$ are calculated
 3. The final encoder representation of the two modalities $A^v$ and $V^a$ are then given to the Proposal Generator:
 	1. The two modalities may have different dimensions with respect to the time duration(sequence length) (does this mean they are not necessarily in sync?). Hence they are not fused here, but instead there are two distinct sets of proposal generator heads, one set for each modality. Hence, for each modality individually, the predictions are made at every time step, forming a "common pool of cross-modal predictions".
-	2. YOLO-like convolutional layers. TODO.
-	3. Predictions: Temporal boundaries, and confidence scores are found by the three values predicted by proposal head: center, length, confidence. 
-	4. Select the top 100 (by confidence score) from common pool of proposals.
+	2. Inspired by YOLO and RPN ([Convolutional layers with anchor boxes](https://arxiv.org/abs/1612.08242)):
+        1. Anchors, calculated apriori, by running K-Means Clustering on the ground truth event lengths (1D). Each centroid of a cluster is taken as an anchor in the anchor set $\psi$.  The distance metric used is the Euclidean distance, while YOLO uses IoU.
+	    2. Predictions: Temporal boundaries, and confidence scores are found by the three values predicted by proposal head: center, length, confidence. Temporal boundaries are calculated using center and length. 
+	    3. $$center = p + \sigma(c)$$
+            $$length = anchor\_length \cdot exp(l)$$
+            $$confidence = \sigma(o)$$
+            Here, $p$ is the position of grid cell (position in sequence). The network predicts $\sigma(c)$, $l$ and $\sigma(o)$. Refer the [YOLOv2 paper](https://arxiv.org/abs/1612.08242); this is the 1D version of it. The sigmoid function constraint is used for the center so that network is more stable and learning becomes easier.
+	1. Select the top 100 (by confidence score) from common pool of proposals.
 
 
 ## Training
