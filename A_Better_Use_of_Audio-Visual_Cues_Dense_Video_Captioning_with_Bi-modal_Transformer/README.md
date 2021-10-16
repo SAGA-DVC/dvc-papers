@@ -59,19 +59,26 @@ It consists of two parts:
 	1. Self-attention for audio, video
 	2. $A^v$ and $V^a$ are calculated
 3. The final encoder representation of the two modalities $A^v$ and $V^a$ are then given to the Proposal Generator:
-	1. The two modalities may have different dimensions with respect to the time duration(sequence length) (does this mean they are not necessarily in sync?). Hence they are not fused here, but instead there are two distinct sets of proposal generator heads, one set for each modality. Hence, for each modality individually, the predictions are made at every time step, forming a "common pool of cross-modal predictions".
-	2. Inspired by YOLO and RPN ([Convolutional layers with anchor boxes](https://arxiv.org/abs/1612.08242)):
-        1. Anchors, calculated apriori, by running K-Means Clustering on the ground truth event lengths (1D). Each centroid of a cluster is taken as an anchor in the anchor set $\psi$.  The distance metric used is the Euclidean distance, while YOLO uses IoU.
-	    2. Predictions: Temporal boundaries, and confidence scores are found by the three values predicted by proposal head: center, length, confidence. Temporal boundaries are calculated using center and length. 
-	    3. $$center = p + \sigma(c)$$
+	* The two modalities may have different dimensions with respect to the time duration (sequence length) (*does this mean they are not necessarily in sync?*). Hence they are not fused here, but instead there are two distinct sets of proposal generator heads, one set for each modality. Hence, for each modality individually, the predictions are made at every time step, forming a "common pool of cross-modal predictions".
+	* Inspired by YOLO and RPN ([Convolutional layers with anchor boxes](https://arxiv.org/abs/1612.08242)):
+        * Anchors, calculated apriori, by running K-Means Clustering on the ground truth event lengths (1D). Each centroid of a cluster is taken as an anchor in the anchor set $\psi$.  The distance metric used is the Euclidean distance, while YOLO uses IoU.
+	    * Predictions: Temporal boundaries, and confidence scores are found by the three values predicted by proposal head: center, length, confidence. Temporal boundaries are calculated using center and length. 
+	    * $$center = p + \sigma(c)$$
             $$length = anchor\_length \cdot exp(l)$$
             $$confidence = \sigma(o)$$
-            Here, $p$ is the position of grid cell (position in sequence). The network predicts $\sigma(c)$, $l$ and $\sigma(o)$. Refer the [YOLOv2 paper](https://arxiv.org/abs/1612.08242); this is the 1D version of it. The sigmoid function constraint is used for the center so that network is more stable and learning becomes easier.
-	1. Select the top 100 (by confidence score) from common pool of proposals.
+            Here, $p$ is the position of grid cell (position in sequence). The network predicts $c$, $l$ and $o$. Refer the [YOLOv2 paper](https://arxiv.org/abs/1612.08242); this is the 1D version of it. The sigmoid function constraint is used for the center so that network is more stable and learning becomes easier.
+        * Each proposal head has three 1D convolutional layers. Through these layers, the sequence length is preserved using padding and stride=1.
+            * The first layers in each head have different kernel size $k$ from sets $K_a$ and $K_v$.
+            * The sets $K_a$ and $K_v$ are calculated apriori by running K-Means Clustering on ground truth event lengths; the idea is to match receptive field sizes with the event sizes.
+            * The next two layers of each head have kernel size=1. 	
+4. Select the top 100 (by confidence score) from common pool of proposals.
+
+The loss for the center $c$ and log coefficient $l$, *Localisation error*, is Mean Squared Error (MSE).
+The confidence loss is the weighted sum of Binary Cross Entropy (BCE) of objectness and no objectness loss.
 
 
 ## Training
-1. Captioning module is trained with ground truth proposals
-2. Proposal Generator is trained using the now trained bi-modal encoder from captioning modules
-3. Loss: KL-divergence, with "Label Smoothing".
-4. Each proposal head uses MSE for localization and cross-entropy for objectness (proposal or not) loss. Ref YOLO.
+1. First, captioning module is trained with ground truth proposals.
+2. Proposal Generator is then trained using the now trained bi-modal encoder from captioning modules.
+3. Captioning Module Loss: KL-divergence, with Label Smoothing
+4. Proposal Generator Loss: Each proposal head uses MSE for localization and cross-entropy for objectness (proposal or not) loss. Ref YOLO.

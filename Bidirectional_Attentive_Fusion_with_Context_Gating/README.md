@@ -13,7 +13,7 @@ Dense Video Captioning:
 ## Novelty
 - ***Bidirectional proposal generator*** to utilize both past and future context while making event predictions
 - ***Context Gating*** to balance the contribution from current event and surrounding contexts dynamically
-- Solve the *problem of inability to distinguish between events ending at around the same time* by ***attentive fusion of hidden states of proposal generator and the video contents***. It is empirically shown that this attention-fused event representation is at solving this problem compared to the individual (separately taken) methods.
+- Solve the *problem of inability to distinguish between events ending at around the same time* by ***attentive fusion of hidden states of proposal generator and the video contents***. It is empirically shown that this attention-fused event representation is better at solving this problem compared to the individual (separately taken) methods.
 - ***Joint ranking*** for dense captioning during inference stage. Combines proposal score and caption confidence to get high confidence (proposal, caption) pairs, which is the main goal of dense video captioning.
 
 ### Single Stream Temporal Action Proposals (SST)
@@ -37,10 +37,10 @@ Generate a set of temporal regions (intervals) that possibly contain events. Eff
 	- Each video frame is encoded using 3D CNN, pre-trained on Sports-1M dataset. Extracted C3D features are *temporal resolution* 16 frames, i.e. each feature ==> 16 frames.
 	- PCA is then used to reduce feature dimensionality. Final visual stream: $V = \{v_1, v_2, v_3, ..., v_{L/16}\}$
 2. Forward Pass: Input is $V$, in forward order.
-	1. LSTM sequentially encodes the visual stream $V$, accumulating visual cues across time. The LSTM hidden states encode visual information is passed time steps.
-	2. LSTM hidden states are fed into *k* independent binary classifiers (sigmoid activation, 0-111), giving *k* confidence scores. Each of these scores is of the proposal with end time as current time, and start time as $t - l_i$, where $\{l_1, l_2, l_3, ..., l_k\}$ are the lengths of the predefined *k* proposal anchors.
-3. Backward Pass: Input is $V$ in *reverse* order.1
-	1. Flow is same as the forward pass, with the classifiers predicting their scores for *k* proposals ***starting*** at current time. So as in the forward pass, we get K proposals and their confidence at every time step.
+	1. LSTM sequentially encodes the visual stream $V$, accumulating visual cues across time. The LSTM hidden states encode visual information in passed time steps.
+	2. LSTM hidden states are fed into *k* independent binary classifiers (sigmoid activation, 0-1), giving *k* confidence scores. Each of these scores is of the proposal with end time as current time, and start time as $t - l_i$, where $\{l_1, l_2, l_3, ..., l_k\}$ are the lengths of the predefined *k* proposal anchors.
+3. Backward Pass: Input is $V$ in *reverse* order
+	1. Flow is same as the forward pass, with the classifiers predicting their scores for *k* proposals ***starting*** at current time. So as in the forward pass, we get k proposals and their confidence at every time step.
 4. Fusion: Fuse the two sets of proposals by performing a multiplication (Hadamard product, simple multiplication of corresponding proposal scores) of the confidence scores.
 5. Proposals with scores larger than a threshold $\tau$ will be selected for captioning.
 
