@@ -82,3 +82,46 @@ The confidence loss is the weighted sum of Binary Cross Entropy (BCE) of objectn
 2. Proposal Generator is then trained using the now trained bi-modal encoder from captioning modules.
 3. Captioning Module Loss: KL-divergence, with Label Smoothing
 4. Proposal Generator Loss: Each proposal head uses MSE for localization and cross-entropy for objectness (proposal or not) loss. Ref YOLO.
+
+
+## Code Explanation
+### Classes
+* `ProposalGenerationHead`: One head, with given kernel_size (of the first Conv1D layer). Independent of modality
+* `ProposalGenerator`: ProposalGenerator for *one*, *specifiable* modality (audio or video). Uses multiple *ProposalGeneratorHead*s in its `forward` method, and concatenates their output as the overall output of the proposal generator.
+* `MultimodalProposalGenerator`: Same as ProposalGenerator, but handling multiple (two for now) modalities. Maybe this could actually be combined with ProposalGenerator as one class, like a general NModalProposalGenerator*
+
+
+### `ProposalGenerationHead`
+* 3 Conv1D layers, with the first layer having `kernel_size=k`, other two having `kernel_size=1`. All layers have `stride=1`, and the first layer has `padding=kernel_size//2` to cover all grid cells. Also why an odd `k`  is preferred.
+* ReLU, Layer normalization and dropout between layers
+* For every layer normalization and convolution, transpose needs to be taken, this is because these operations need to be applied on the sequence dimension, and in the input, the sequence (of video features) dimension is the second dimension, not third.
+	* B: batch_size, S: sequence len (of video features), D: feature dimension
+	* Original: (B, S, D). Since S dimension needs to be convolved over, it needs to be (B, D, S). See the `ProposalGenerationHead.forward` method. In fact, the `blocks.Transpose` class should be used here too.
+	* Similar (*anti-symmetrical?*) for Layer Norm. Its input should be (B, S, D) to normalize over the D dimension (feature dimension), but due to Conv1D layers, the shape being convolved is (B, D, S). Hence a transpose is required here.
+* In `ProposalGenerationHead.forward`, the line `x = self.fc_layer(x)` is suspiciously commented.
+
+### `ProposalGenerator`
+* Handles one modality for an instance
+* Final layer dimension of each head: (B, S, A, 3) --> batch_size, sequence len, anchors_num, 3 (`c`entre, `l`og coefficient, `o`bjectness score)
+* `forward` consists of:
+	* Linear embedder (`blocks.FeatureEmbedder`) (optional, only point I see is to convert feature dimension to that what the detection layer expects)
+	* Positional Encoder (`blocks.PositionalEncoder`): to encode order information in the features
+	* Encoder: *The* encoder, i.e. the encoder block of the captioning module. If the encoder is pre-trained, a path is to be supplied, and that encoder is used. Otherwise, a new encoder is initialized (maybe for "*Separate*" training (refer *4.2, Training Procedures*)).
+	* Detection layer (`ProposalGenerationHead`s, one for each of the kernel sizes)
+* Binary Cross entropy loss for objectness / confidence, and MSE loss for localisation (center and log coeff (len)).
+* `kernel_size_forward` method is the forward method for one head (i.e. one kernel size). It takes the head to be applied (frustratingly called `layer`) and carries out the forward prop through the head. 
+	* Output dim: (B, S, D) --> (B, S, A, 3)
+	* After this, it calculates $\sigma(c)$ and $\sigma(o)$.  c is `[:, :, :, 0]`, l is `[:, :, :, 1]`  and o is `[:, :, :, 2]` (called the logits).
+	* Then it calculates the predictions (center position, length of proposal, confidence) using the formulae.
+	* If training (`targets` are specified), then the losses are calculated. To calculate losses, the ground truth proposals are first converted into a form ("`obj_mask, noobj_mask, gt_x, gt_w, gt_obj`") using the `make_targets` function.
+
+
+### `MultimodalProposalGenerator`
+* Very similar to `ProposalGenerator`, except it is bimodal. It does the Linear Embedder and Positional Encoder for both modalities separately. Then it uses the `BiModalEncoder` instead of `Encoder`.
+* It has two `detection_layers`: one for A and one for V.
+* Its `forward_modality` is same as (the counterpart of) `ProposalGenerator.kernel_size_forward` (almost verbatim)
+* In the `forward` method, the two modalities output from `self.encoder` (which is a `BiModalEncoder`) is `(Av, Va)` (attention).
+
+
+#### `make_targets`
+This is a function to convert ground truth proposals to a form that can be compared with predictions to compute the losses. TODO.
