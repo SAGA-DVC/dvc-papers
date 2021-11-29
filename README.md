@@ -1,5 +1,5 @@
 # dvc-papers
-A repository to track research papers and notes
+A repository to track research papers and notes.
 
 ## Table of Papers
 | # | Name | Year | Paper Link | Description |
