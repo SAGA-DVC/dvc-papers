@@ -13,3 +13,4 @@ A repository to track research papers and notes
 | 7 | [iPerceive: Applying Common-Sense Reasoning to Multi-Modal Dense Video Captioning and Video Question Answering](iPerceive_Applying_Common-Sense_Reasoning_to_Multi-Modal_Dense_Video_Captioning_and_Video_Question_Answering/README.md) | 2020 | [:link:](https://arxiv.org/abs/2011.07735) | DVC with main focus on reducing cognitive error and attending to objects |
 | 8 | [Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset](I3D_Action_Recognition_Kinetics_Dataset/README.md) | 2018 | [:link:](https://arxiv.org/abs/1705.07750) | I3D Model for extraction of visual features |
 | 9 | [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale - ViT](ViT/README.md) | 2020/2021 | [:link:](https://arxiv.org/abs/2010.11929) | Vision Transformer |
+| 9 | [Anticipative Video Transformer - AVT](AVT/README.md) | 2021 | [:link:](https://arxiv.org/abs/2106.02036) | Action Anticipation task |
