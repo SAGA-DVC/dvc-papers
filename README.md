@@ -14,4 +14,4 @@ A repository to track research papers and notes
 | 8 | [Quo Vadis, Action Recognition? A New Model and the Kinetics Dataset](I3D_Action_Recognition_Kinetics_Dataset/README.md) | 2018 | [:link:](https://arxiv.org/abs/1705.07750) | I3D Model for extraction of visual features |
 | 9 | [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale - ViT](ViT/README.md) | 2020/2021 | [:link:](https://arxiv.org/abs/2010.11929) | Vision Transformer |
 | 10 | [Anticipative Video Transformer - AVT](AVT/README.md) | 2021 | [:link:](https://arxiv.org/abs/2106.02036) | Action Anticipation task |
-| 11 | [Towards_Automatic_Learning_of_Procedures_from_Web_Instructional_Videos](Towards_Automatic_Learning_of_Procedures_from_Web_Instructional_Videos/README.md) | 2017 | [:link:](https://arxiv.org/abs/1703.09788) | Generating proposals for procedural video |
+| 11 | [Towards Automatic Learning of Procedures from Web Instructional Videos](Towards_Automatic_Learning_of_Procedures_from_Web_Instructional_Videos/README.md) | 2017 | [:link:](https://arxiv.org/abs/1703.09788) | Generating proposals for procedural video |
