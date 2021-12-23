@@ -49,7 +49,7 @@ Generate a set of temporal regions (intervals) that possibly contain events. Eff
 Get captions of selected proposals
 
 ### Flow
-1. Representation of proposals: If only Proposal Module's LSTM's hidden state is taken, the *"discrimination property of event representation is overlooked"*, i.e. the problem of multiple events ending at the same time not being identified as distinct. There are k proposals ending at every time step (potentially; at max), but only one LSTM hidden state for that time step. Hence, to get a more discriminative proposal representation, this LSTM hidden state (proposal state info) is fused (using attention) with video features (C3D sequences). Intuition: corresponding visual features will help discriminate overlapping features.
+1. Representation of proposals: If only Proposal Module's LSTM's hidden state is taken, the *"discrimination property of event representation is overlooked"*, i.e. the problem of multiple events ending at the same time not being identified as distinct. There are k proposals ending at every time step (potentially; at max), but only one LSTM hidden state for that time step. Hence, to get a more discriminative proposal representation, this LSTM hidden state (proposal state info) is fused (using attention) with video features (C3D sequences). Intuition: corresponding visual features will help discriminate overlapping events.
 2. Hence, this fusion of encoded visual features + proposal states (which have past + future context + current info) is the input to an LSTM decoder. 
 	1. Simple concatenation is not possible, since dim of visual features is different
 	2. Mean pooling of visual feature is not taken as it does not explicitly explore the relationship between an event and surrounding contexts.
