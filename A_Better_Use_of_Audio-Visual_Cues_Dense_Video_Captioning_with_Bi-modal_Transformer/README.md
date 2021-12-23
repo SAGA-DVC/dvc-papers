@@ -10,12 +10,16 @@ Dense Video Captioning:
 - In the transformer architecture, attention is used to fuse the two input sequences.
 - YOLO inspired proposal head for multi-head proposal generator.
 
-#### Dataset: ActivityNet Captions
-SOTA performance on BLEU@3-4 and F1 metrics.
+#### Dataset: 
+* ActivityNet Captions Dataset
+
+#### Performance
+* SOTA performance with BLEU@3-4 for DVC 
+* SOTA performance with F1 metrics for proposal generation
 
 ## Architecture
 
-![](assets/Pasted%20image%2020210730143821.png)
+![](assets/bmt-architecture.png)
 1. **Input**: continuous features stacked in a sequence.
 	1. Visual: Inflated 3D network (I3D)
 	2. Audio: VGGish
@@ -48,6 +52,8 @@ There are Normalization layers and dropout at some places
 ## Event Generation Proposal Module
 ### Goal
 Generate a set of proposals, given a video.
+
+![Event Proposal Generation Module](assets/bmt-proposal-generator.png)
 
 ### Flow
 It consists of two parts:
