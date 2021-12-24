@@ -15,3 +15,4 @@ A repository to track research papers and notes
 | 9 | [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale - ViT](ViT/README.md) | 2020/2021 | [:link:](https://arxiv.org/abs/2010.11929) | Vision Transformer |
 | 10 | [Anticipative Video Transformer - AVT](AVT/README.md) | 2021 | [:link:](https://arxiv.org/abs/2106.02036) | Action Anticipation task |
 | 11 | [Towards Automatic Learning of Procedures from Web Instructional Videos](Towards_Automatic_Learning_of_Procedures_from_Web_Instructional_Videos/README.md) | 2017 | [:link:](https://arxiv.org/abs/1703.09788) | Generating proposals for procedural video |
+| 12 | [Dense-Captioning Events in Videos](Dense_Captioning_Events_in_Videos/README.md) | 2017 | [:link:](https://arxiv.org/abs/1705.00754) | Introduced DVC and ActivityNet Captions dataset. Architecture inspired by DAPs. |
