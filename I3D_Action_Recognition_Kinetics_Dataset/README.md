@@ -20,7 +20,7 @@ Instead of standard 2D ConvNets, we use ConvNets with **spatio-temporal** filter
 * They have many more parameters than 2D ConvNets, making them much harder to train
 * We also cannot make use of pre-trained networks (e.g. on ImageNet)
 
-Due to these reasons, previous work with 3D ConvNets are mostly involve shallow architectures, trained from scratch.
+Due to these reasons, previous work with 3D ConvNets mostly involve shallow architectures, trained from scratch.
 
 #### Two-Stream Networks
 Capturing low-level motion using LSTMs after last layers of ConvNets is very expensive to train as it requires unrolling the network through multiple frames.

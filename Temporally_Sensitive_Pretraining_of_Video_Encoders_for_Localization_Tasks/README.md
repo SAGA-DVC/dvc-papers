@@ -1,6 +1,6 @@
 # TSP: Temporally Sensitive Pretraining of Video Encoders for Localization Tasks
 ## The Point
-Most localization methods use video features extracted by models that are trained for Trimmed Action Classification (TAC). They're not necessarily suited for Temporal Action Localization (TAL). E.g., R(2+1)D, I3D and C3D have become the *de facto* video feature extracters for TAL, Action Proposal and DVC tasks; these are trained on TAC.
+Most localization methods use video features extracted by models that are trained for Trimmed Action Classification (TAC). They're not necessarily suited for Temporal Action Localization (TAL). E.g., R(2+1)D, I3D and C3D have become the *de facto* video feature extractors for TAL, Action Proposal and DVC tasks; these are trained on TAC.
 
 A supervised pre-training paradigm is introduced that also considers background clips (which are not as important as for TAC) and global video information, to *improve temporal sensitivity*. TAC-pretrained features tend to be temporally insensitive.
 
