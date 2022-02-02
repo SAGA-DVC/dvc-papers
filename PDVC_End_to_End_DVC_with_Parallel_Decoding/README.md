@@ -39,17 +39,13 @@ An event counter predicts the number of events in the video; it learns to do so,
 ### Feature Encoding
 * Features extracted from videos using C3D (and TSN for comparison)
 * $L$ temporal convolutional layers (convolutions over temporal dimension) to get **multi-scale features**, from $T$ to $T/2^L$ 
-* Multi-scale frame features with positional encoding are given to the encoder of **deformable transformer** 
-* In the deformable transformer, instead of:
-    * self-attention blocks in encoder and
-    * cross-attention blocks in decoder, 
-  Multi-scale Deformable Attention blocks (MSDAtt) are used
+* Multi-scale frame features with positional encoding are given to the **encoder of deformable transformer** 
     * MSDAtt gives a context vector as output, termed $\{\mathbf{f}_l\}_{l=1}^L$
 
 ### Parallel Decoding
-* Consists of the deformable transformer decoder and the three prediction heads - event counter, localization head and caption head
-* MSDAtt also used here?
-* Decoder layers query event level features from $\{\mathbf{f}_l\}_{l=1}^L$ conditioned on $N$ learnable embeddings (event queries $q_j$) and corresponding scalar reference points $p_j$
+* Consists of the **deformable transformer decoder** and the three prediction heads - event counter, localization head and caption head
+* MSDAtt also used here, in place of cross-attention; self-attention is unchanged
+* Decoder layers query event level features from $\{\mathbf{f}_l\}_{l=1}^L$ conditioned on $N$ learnable embeddings (event query $q_j$) and corresponding scalar reference point $p_j$
     * Event query $q_j$  is an initial guess of event features
     * Reference point $p_j$ is an initial guess of center point of event
     * $q_j$ and $p_j$ are refined at each decoder layer. Final: $\tilde{q_j}$ and $\tilde{p_j}$*
@@ -96,7 +92,7 @@ Here, $\mu$ is the balance factor between localization and captioning confidence
 
 
 ## Set Prediction Loss
-* Hungarian Algorithm to match predicted events with ground truths to find best bipartite matching results
+* Hungarian Algorithm to match predicted events with ground truths to find best bipartite (the two sets are predicted events and ground truth events) matching results
 * Matching cost:
 $$C = \alpha_{giou}L_{giou} + \alpha_{cls}L_{cls}$$
 * Set prediction loss:
@@ -107,8 +103,19 @@ Here,
 * $L_{ec}$: cross-entropy loss between predicted event count distribution and ground truth
 * $L_{cap}$: cross-entropy loss between predicted word distribution and ground truth (normalized by caption length)
 
+## Multi-scale Deformable Attention
+Refer:
+* [Deformable DETR: Deformable Transformers for End-to-End Object Detection](https://arxiv.org/abs/2010.04159)
+* [OpenReview](https://openreview.net/forum?id=gZ9hCDWe6ke)
+Goal: To mitigate problems:
+* Slow convergence: attention is initially uniformly distributed; for performance, it needs to be sparse
+* Attention has quadratic complexity with spatial size; processing high resolution or multi-scale feature maps becomes difficult
+![MSDAtt](assets/Pasted%20image%2020220202214416.png)
+    * It attends to a sparse set of sampling points around certain reference point
+    * Acting as a pre-filter for prominent key elements out of all feature map vectors
+    * This is inspired by deformable convolutions
+    * Sparsity of attention is data-dependent, and is learnt; contrasting to pre-defined sparse attention
+![Deformable Attention aggregation](assets/Pasted%20image%2020220202215035.png)
+![Multi-scale deformable attention aggregation](assets/Pasted%20image%2020220202215059.png)
+* Ambiguity of MSDAtt actually being an attention mechanism, since attention weight $A$ does not involve a similarity score between query and keys: https://openreview.net/forum?id=gZ9hCDWe6ke&noteId=x1VT5henOtF*
 
-### TODO:
-* MSDAtt
-* Hungarian algorithm
-* Deformable Soft Attention
